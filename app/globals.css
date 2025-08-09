@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 213 96% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 96% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 96% 16%;
+    --primary: 213 96% 16%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 213 96% 16%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 213 96% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 213 96% 16%;
+    --radius: 0.75rem;
+    
+    /* Agents-11 Brand Variables */
+    --brand-blue: 213 96% 16%;
+    --brand-orange: 16 100% 60%;
+    --brand-gray-light: 0 0% 96%;
+    --brand-gray-dark: 0 0% 20%;
+    
+    /* Agent-11 Technical Suite Colors */
+    --agent-strategist: 258 90% 66%;
+    --agent-architect: 221 83% 53%;
+    --agent-developer: 160 84% 39%;
+    --agent-tester: 24 95% 53%;
+    --agent-designer: 322 90% 60%;
+    --agent-documenter: 32 95% 44%;
+    --agent-operator: 220 14% 46%;
+    --agent-support: 188 95% 44%;
+    --agent-analyst: 244 66% 65%;
+    --agent-marketer: 0 84% 60%;
+    --agent-coordinator: 30 95% 44%;
+    
+    /* Empire-11 Business Suite Colors */
+    --empire-sage: 51 100% 50%;
+    --empire-nova: 16 100% 60%;
+    --empire-astra: 258 90% 66%;
+    --empire-phoenix: 173 80% 40%;
+    --empire-rex: 220 13% 25%;
+    --empire-zara: 160 84% 39%;
+    --empire-alex: 217 91% 60%;
+    --empire-luna: 322 90% 60%;
+    --empire-kai: 258 90% 66%;
+    --empire-bob: 16 100% 60%;
+    --empire-echo: 0 84% 60%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Agent Icon Styles */
+  .agent-icon {
+    @apply w-16 h-16 rounded-xl shadow-agent transition-all duration-300 hover:shadow-glow hover:scale-105;
+  }
+  
+  .agent-icon-small {
+    @apply w-8 h-8 rounded-lg;
+  }
+  
+  .agent-icon-large {
+    @apply w-24 h-24 rounded-2xl;
+  }
+  
+  /* Brand Logo Styles */
+  .brand-logo {
+    @apply transition-all duration-300 hover:scale-105;
+  }
+  
+  /* Pattern Background Styles */
+  .pattern-background {
+    @apply relative overflow-hidden;
+  }
+  
+  .pattern-overlay {
+    @apply absolute inset-0 opacity-10 pointer-events-none;
+  }
+  
+  /* Agent Grid Styles */
+  .agent-grid {
+    @apply grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
+  }
+  
+  .agent-card {
+    @apply bg-card rounded-xl p-4 shadow-agent hover:shadow-brand transition-all duration-300 hover:scale-105 cursor-pointer;
+  }
+  
+  /* Status Indicator Styles */
+  .status-active {
+    @apply w-3 h-3 bg-status-active rounded-full animate-pulse-glow;
+  }
+  
+  .status-inactive {
+    @apply w-3 h-3 bg-status-inactive rounded-full;
+  }
+  
+  /* Hero Section Styles */
+  .hero-section {
+    @apply relative min-h-[600px] flex items-center justify-center overflow-hidden;
+  }
+  
+  .hero-gradient {
+    @apply bg-hero-gradient;
+  }
+  
+  /* Animation Utilities */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .slide-up {
+    @apply animate-slide-up;
+  }
+}

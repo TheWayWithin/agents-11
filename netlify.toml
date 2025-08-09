@@ -1,0 +1,155 @@
+[build]
+  # Build command for Next.js
+  command = "npm run build"
+  
+  # Directory where build artifacts are stored
+  publish = ".next"
+  
+  # Functions directory for Netlify Edge Functions
+  functions = "netlify/functions"
+  edge_functions = "netlify/edge-functions"
+
+[build.environment]
+  # Node.js version
+  NODE_VERSION = "18"
+  
+  # Next.js specific optimizations
+  NEXT_TELEMETRY_DISABLED = "1"
+  
+  # Build optimizations
+  NPM_FLAGS = "--production=false"
+  NODE_ENV = "production"
+
+# Next.js plugin for proper routing and SSR/ISR support
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Headers for all routes - Security and Performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security Headers
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), ambient-light-sensor=(), autoplay=(self)"
+    
+    # Performance Headers
+    X-DNS-Prefetch-Control = "on"
+    
+    # Cache Control for static assets
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Specific headers for HTML files
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Specific headers for API routes
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    X-Robots-Tag = "noindex"
+
+# Font optimization headers
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# Image optimization headers
+[[headers]]
+  for = "/_next/image/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Static assets cache headers
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Redirect Rules
+# Redirect www to non-www (or vice versa based on preference)
+[[redirects]]
+  from = "https://www.agents-11.com/*"
+  to = "https://agents-11.com/:splat"
+  status = 301
+  force = true
+
+# Redirect HTTP to HTTPS
+[[redirects]]
+  from = "http://agents-11.com/*"
+  to = "https://agents-11.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.agents-11.com/*"
+  to = "https://agents-11.com/:splat"
+  status = 301
+  force = true
+
+# Handle Next.js dynamic routes and API routes
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/___netlify-handler"
+  status = 200
+
+# Handle Next.js pages (SPA fallback)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment-specific build settings
+[context.production]
+  command = "npm run build"
+  
+[context.production.environment]
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[context.deploy-preview]
+  command = "npm run build"
+  
+[context.deploy-preview.environment]
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[context.branch-deploy]
+  command = "npm run build"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Dev context for development builds
+[context.dev]
+  command = "npm run build"
+  
+[context.dev.environment]
+  NODE_ENV = "development"
+
+# Form handling (if needed for contact forms)
+[build.processing]
+  skip_processing = false
+  
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+# Performance optimizations
+[build.processing.images]
+  compress = true

@@ -1,0 +1,45 @@
+{
+  "functions": [
+    {
+      "function": "security-headers",
+      "path": "/*",
+      "priority": 1
+    },
+    {
+      "function": "geolocation", 
+      "path": "/*",
+      "priority": 2
+    },
+    {
+      "function": "performance",
+      "path": "/*", 
+      "priority": 3
+    },
+    {
+      "function": "auth-guard",
+      "path": "/dashboard/*",
+      "priority": 4
+    },
+    {
+      "function": "auth-guard",
+      "path": "/api/libraries/*",
+      "priority": 4
+    },
+    {
+      "function": "auth-guard", 
+      "path": "/api/download/*",
+      "priority": 4
+    },
+    {
+      "function": "auth-guard",
+      "path": "/api/stripe/portal",
+      "priority": 4
+    },
+    {
+      "function": "api-handler",
+      "path": "/api/*",
+      "priority": 5
+    }
+  ],
+  "version": 1
+}

@@ -1,7 +1,8 @@
 import { createClient } from './server';
+import { createClient as createBrowserClient } from './client';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
-import type { User } from '@supabase/supabase-js';
+import type { User, AuthError, Provider } from '@supabase/supabase-js';
 import type { Profile, Subscription } from '@/types/supabase';
 
 /**
@@ -73,7 +74,7 @@ export async function requireAuth(): Promise<User> {
  * Checks if the user has the required subscription tier
  */
 export async function requireSubscription(
-  requiredTier: 'basic' | 'pro' | 'enterprise' = 'basic'
+  requiredTier: 'single' | 'library' | 'unlimited' = 'single'
 ): Promise<{ user: User; subscription: Subscription }> {
   const user = await requireAuth();
   const subscription = await getUserSubscription();
@@ -83,7 +84,7 @@ export async function requireSubscription(
   }
 
   // Check if user's tier is sufficient
-  const tierHierarchy = { basic: 1, pro: 2, enterprise: 3 };
+  const tierHierarchy = { single: 1, library: 2, unlimited: 3 };
   const userTierLevel = tierHierarchy[subscription.tier];
   const requiredTierLevel = tierHierarchy[requiredTier];
 
@@ -92,6 +93,43 @@ export async function requireSubscription(
   }
 
   return { user, subscription };
+}
+
+/**
+ * Checks if the user can access a specific agent
+ */
+export async function canAccessAgent(agentId: string): Promise<boolean> {
+  const user = await getUser();
+  if (!user) return false;
+
+  const supabase = createClient();
+  
+  // Check if agent is free
+  const { data: agent } = await supabase
+    .from('agents')
+    .select('pricing_model')
+    .eq('id', agentId)
+    .eq('status', 'published')
+    .single();
+    
+  if (agent?.pricing_model === 'free') return true;
+  
+  // Check user access
+  const { data: access } = await supabase
+    .from('user_agent_access')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('agent_id', agentId)
+    .single();
+    
+  if (!access) return false;
+  
+  // Check if access is still valid
+  if (access.expires_at && new Date(access.expires_at) < new Date()) {
+    return false;
+  }
+  
+  return true;
 }
 
 /**
@@ -138,52 +176,56 @@ export async function requireAdmin(): Promise<User> {
 }
 
 /**
- * Gets user's download stats
+ * Gets user's installation stats
  */
-export async function getUserDownloadStats() {
+export async function getUserInstallationStats() {
   const user = await getUser();
   if (!user) return null;
 
   const supabase = createClient();
 
-  // Get total downloads
-  const { count: totalDownloads } = await supabase
-    .from('downloads')
+  // Get total installations
+  const { count: totalInstallations } = await supabase
+    .from('agent_installations')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', user.id);
 
-  // Get downloads this month
+  // Get installations this month
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   startOfMonth.setHours(0, 0, 0, 0);
 
-  const { count: downloadsThisMonth } = await supabase
-    .from('downloads')
+  const { count: installationsThisMonth } = await supabase
+    .from('agent_installations')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', user.id)
-    .gte('downloaded_at', startOfMonth.toISOString());
+    .gte('installed_at', startOfMonth.toISOString());
 
-  // Get recent downloads with library info
-  const { data: recentDownloads } = await supabase
-    .from('downloads')
+  // Get recent installations with agent info
+  const { data: recentInstallations } = await supabase
+    .from('agent_installations')
     .select(
       `
       *,
-      libraries (
+      agents (
         name,
         slug,
-        category
+        icon_url,
+        developer:profiles!agents_developer_id_fkey (
+          full_name,
+          username
+        )
       )
     `
     )
     .eq('user_id', user.id)
-    .order('downloaded_at', { ascending: false })
+    .order('installed_at', { ascending: false })
     .limit(10);
 
   return {
-    total_downloads: totalDownloads || 0,
-    downloads_this_month: downloadsThisMonth || 0,
-    recent_downloads: recentDownloads || [],
+    total_installations: totalInstallations || 0,
+    installations_this_month: installationsThisMonth || 0,
+    recent_installations: recentInstallations || [],
   };
 }
 

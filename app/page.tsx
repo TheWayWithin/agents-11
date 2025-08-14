@@ -1,36 +1,19 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { HeroSection } from '@/components/ui/hero-section';
+import { HeroSection } from '@/components/landing/hero-section';
+import { UnlimitedOffer } from '@/components/landing/unlimited-offer';
 import { AgentIcon } from '@/components/ui/agent-icon';
 import { PatternBackground } from '@/components/ui/pattern-background';
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <HeroSection
-        title="Elite AI Agents Ready for Deployment"
-        subtitle="AGENTS-11 MARKETPLACE"
-        description="Access premium, battle-tested AI agents and automation systems. Built by experts, deployed by professionals. Transform your operations with Agent-11 and Empire-11."
-        illustration="hero"
-        backgroundPattern="hero-gradient"
-        layout="split"
-        className="py-16"
-      >
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/library">
-            <Button size="lg" className="px-8 py-3 text-lg">
-              Explore Library
-            </Button>
-          </Link>
-          <Link href="/pricing">
-            <Button variant="outline" size="lg" className="px-8 py-3 text-lg">
-              View Pricing
-            </Button>
-          </Link>
-        </div>
-      </HeroSection>
+    <main>
+      {/* Value Ladder Hero Section */}
+      <HeroSection />
+
+      {/* Unlimited Offer Section */}
+      <UnlimitedOffer />
 
       {/* Featured Products */}
       <PatternBackground pattern="circuit" opacity={0.05} className="py-16">
@@ -188,6 +171,6 @@ export default function Home() {
           </Button>
         </Link>
       </section>
-    </div>
+    </main>
   );
 }
